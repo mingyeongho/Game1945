@@ -15,6 +15,7 @@ public class Controller implements Initializable{
 
 	@FXML AnchorPane pane;
 	@FXML ImageView jet;
+	@FXML ImageView bullet;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -23,16 +24,31 @@ public class Controller implements Initializable{
 			public void handle(KeyEvent event) {
 				if (event.getCode() == KeyCode.UP) {
 					jet.setLayoutY(jet.getLayoutY()-10);
+					bullet.setLayoutY(bullet.getLayoutY()-10);
 				} else if (event.getCode() == KeyCode.RIGHT) {
 					jet.setLayoutX(jet.getLayoutX()+10);
+					bullet.setLayoutX(bullet.getLayoutX()+10);
 				} else if (event.getCode() == KeyCode.LEFT) {
 					jet.setLayoutX(jet.getLayoutX()-10);
+					bullet.setLayoutX(bullet.getLayoutX()-10);
 				}  else if (event.getCode() == KeyCode.DOWN) {
 					jet.setLayoutY(jet.getLayoutY()+10);
+					bullet.setLayoutY(bullet.getLayoutY()+10);
 				}  
 				if (event.getCode() == KeyCode.SPACE) {
 					Thread thread = new Thread( ()-> {
-						
+						while (true) {
+							bullet.setLayoutY(bullet.getLayoutY()-10);
+							try {
+								Thread.sleep(100);
+							} catch (Exception e) {
+								System.out.println("enter Exception");
+							}
+							if (bullet.getLayoutY() == 0) {
+								bullet.setLayoutX(jet.getLayoutX()+jet.getFitWidth()/2);
+								bullet.setLayoutY(jet.getLayoutY());
+							}
+						}
 					});
 					thread.start();
 				}
