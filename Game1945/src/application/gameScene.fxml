@@ -4,17 +4,13 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="711.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="711.0" prefWidth="833.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <ImageView fx:id="bullet" fitHeight="60.0" fitWidth="21.0" layoutX="406.0" layoutY="546.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="jet" fitHeight="98.0" fitWidth="109.0" focusTraversable="true" layoutX="389.0" layoutY="572.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/shoot.png" />
+            <Image url="@../images/rocket.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="jet" fitHeight="98.0" fitWidth="109.0" focusTraversable="true" layoutX="378.0" layoutY="572.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/jet.png" />
-         </image>
-      </ImageView>
+      
    </children>
 </AnchorPane>
