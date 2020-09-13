@@ -64,51 +64,65 @@ public class Controller implements Initializable{
 			}
 		});
 		
-//		 운석이 떨어지는 쓰레드
-		pane.setOnMousePressed(event->{
-			ImageView meteor = new ImageView(new Image("file:///C:/Users/min%20gyeong%20ho/git/Game1945/Game1945/src/images/meteor.png"));
-			meteor.setFitWidth(50);
-			meteor.setFitHeight(50);
-			meteorX = Math.random()*pane.getPrefWidth();
-			meteor.setLayoutX(meteorX);
-			meteor.setLayoutY(0);
-			pane.getChildren().add(meteor);
-			Thread meteorThread = new Thread(()->{
-				while(true) {
-					Platform.runLater(()->{
-						meteor.setLayoutY(meteor.getLayoutY()+10);
-						if (meteor.getLayoutY() == pane.getPrefHeight()) {
-							pane.getChildren().remove(meteor);
+		// 운석이 2초마다 하나씩 내려오는 스레드
+		Thread thread = new Thread(()->{
+			while(true) {
+				ImageView meteor = new ImageView(new Image("file:///C:/Users/min%20gyeong%20ho/git/Game1945/Game1945/src/images/meteor.png"));
+				meteor.setFitWidth(50);
+				meteor.setFitHeight(50);
+				meteorX = Math.random()*pane.getPrefWidth();
+				meteor.setLayoutX(meteorX);
+				meteor.setLayoutY(0);
+				Platform.runLater(()->{
+					pane.getChildren().add(meteor);
+					Thread meteorThread = new Thread(()->{
+						while(true) {
+							Platform.runLater(()->{
+								meteor.setLayoutY(meteor.getLayoutY()+10);
+								if (meteor.getLayoutY() == pane.getPrefHeight()) {
+									pane.getChildren().remove(meteor);
+								}
+							});
+							try {
+								Thread.sleep(100);
+							} catch(Exception e) {
+							}
 						}
 					});
-					try {
-						Thread.sleep(100);
-					} catch(Exception e) {
-					}
-				}
-			});
-			meteorThread.start();
-		});
-		
-		
-		// 검은 배경에 흰색 점이 떨어지는 쓰레드
-		Thread starThread = new Thread( ()-> {
-			starX = Math.random() * pane.getPrefWidth();
-			Circle star = new Circle(starX, 0 , 2);
-			star.setFill(Color.WHITE);
-			pane.getChildren().add(star);
-			while(true) {
-				Platform.runLater(()->{
-					star.setLayoutY(star.getLayoutY()+10);
+					meteorThread.start();
 				});
 				try {
-					Thread.sleep(50);
+					Thread.sleep(2000);
 				} catch(Exception e) {
+					
 				}
 			}
 		});
-		starThread.start();
+		thread.start();
 		
+		// 검은 배경에 흰색 점이 떨어지는 쓰레드
+//		Thread starThread = new Thread( ()-> {
+//			starX = Math.random() * pane.getPrefWidth();
+//			Circle star = new Circle(starX, 0 , 2);
+//			star.setFill(Color.WHITE);
+//			pane.getChildren().add(star);
+//			while(true) {
+//				Platform.runLater(()->{
+//					star.setLayoutY(star.getLayoutY()+10);
+//				});
+//				try {
+//					Thread.sleep(50);
+//				} catch(Exception e) {
+//				}
+//			}
+//		});
+//		starThread.start();
 		
+		/*
+		 * 해야할 일
+		 * 1. 마우스 클릭 시 메테오가 떨어지지만 이것을 그냥 있어도 메테오가 떨어지게끔
+		 * 2. 불릿이 메테오에 닿으면 메테오의 이미지가 bomb으로 바뀜
+		 * 3. 메테오가 rocket에 닿으면 게임 끝
+		 */
 	}
 }
