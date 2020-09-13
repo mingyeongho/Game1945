@@ -65,7 +65,7 @@ public class Controller implements Initializable{
 		});
 		
 		// 운석이 2초마다 하나씩 내려오는 스레드
-		Thread thread = new Thread(()->{
+		Thread fallingMeteorThread = new Thread(()->{
 			while(true) {
 				ImageView meteor = new ImageView(new Image("file:///C:/Users/min%20gyeong%20ho/git/Game1945/Game1945/src/images/meteor.png"));
 				meteor.setFitWidth(50);
@@ -92,14 +92,42 @@ public class Controller implements Initializable{
 					meteorThread.start();
 				});
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1500);
 				} catch(Exception e) {
 					
 				}
 			}
 		});
-		thread.start();
+		fallingMeteorThread.start();
 		
+		Thread fallingStarThread = new Thread(()->{
+			while(true) {
+				starX = Math.random() * pane.getPrefWidth();
+				Circle star = new Circle(starX, 0 , 2);
+				star.setFill(Color.WHITE);
+				Platform.runLater(()->{
+					pane.getChildren().add(star);
+					Thread starThread = new Thread(()->{
+						while(true) {
+							Platform.runLater(()->{
+								star.setLayoutY(star.getLayoutY()+10);
+							});
+							try {
+								Thread.sleep(50);
+							} catch(Exception e) {
+							}
+						}
+					});
+					starThread.start();
+				});
+				try {
+					Thread.sleep(500);
+				} catch(Exception e) {
+					
+				}
+			}
+		});
+		fallingStarThread.start();
 		// 검은 배경에 흰색 점이 떨어지는 쓰레드
 //		Thread starThread = new Thread( ()-> {
 //			starX = Math.random() * pane.getPrefWidth();
