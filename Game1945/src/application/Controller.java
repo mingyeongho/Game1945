@@ -2,8 +2,8 @@ package application;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Vector;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,8 +20,10 @@ public class Controller implements Initializable{
 	@FXML AnchorPane pane;
 	@FXML ImageView jet;
 
+//	ImageView meteor;
 	
-	
+	double meteorX;
+	double starX;
 	
 	
 	@Override
@@ -43,57 +45,70 @@ public class Controller implements Initializable{
 				
 				// shootingThread
 				if (event.getCode() == KeyCode.SPACE) {
-					Circle circle = new Circle(jet.getLayoutX() + 28, jet.getLayoutY() - 10, 5);
-					circle.setFill(Color.RED);
-					pane.getChildren().add(circle);
+					Circle bullet = new Circle(jet.getLayoutX() + 28, jet.getLayoutY() - 10, 5);
+					bullet.setFill(Color.RED);
+					pane.getChildren().add(bullet);
 					Thread shootingThread = new Thread(()-> {
 						while(true) {
-							circle.setLayoutY(circle.getLayoutY()-10);
+							Platform.runLater(()-> {
+								bullet.setLayoutY(bullet.getLayoutY()-10);
+							});
 							try {
 								Thread.sleep(50);
 							} catch(Exception e) {
-								
-							}
-							if (circle.getLayoutY() == 0) {
-								pane.getChildren().remove(circle);
-								break;
 							}
 						}
 					});
-					shootingThread.setDaemon(true);
 					shootingThread.start();
 				}
 			}
 		});
 		
 //		 운석이 떨어지는 쓰레드
-		Thread meteorThread = new Thread(()->{
-			ImageView imageview = new ImageView(new Image("file:///C:/Users/min%20gyeong%20ho/git/Game1945/Game1945/src/images/meteor.png"));
-			imageview.setFitWidth(50);
-			imageview.setFitHeight(50);
-			imageview.setLayoutX(100);
-			imageview.setLayoutY(0);
-			pane.getChildren().add(imageview);
-			while(true) {
-				imageview.setLayoutY(imageview.getLayoutY()+10);
-				try {
-					Thread.sleep(100);
-				} catch(Exception e) {
-					
+		pane.setOnMousePressed(event->{
+			ImageView meteor = new ImageView(new Image("file:///C:/Users/min%20gyeong%20ho/git/Game1945/Game1945/src/images/meteor.png"));
+			meteor.setFitWidth(50);
+			meteor.setFitHeight(50);
+			meteorX = Math.random()*pane.getPrefWidth();
+			meteor.setLayoutX(meteorX);
+			meteor.setLayoutY(0);
+			pane.getChildren().add(meteor);
+			Thread meteorThread = new Thread(()->{
+				while(true) {
+					Platform.runLater(()->{
+						meteor.setLayoutY(meteor.getLayoutY()+10);
+						if (meteor.getLayoutY() == pane.getPrefHeight()) {
+							pane.getChildren().remove(meteor);
+						}
+					});
+					try {
+						Thread.sleep(100);
+					} catch(Exception e) {
+					}
 				}
-				if (imageview.getLayoutY() == 0) {
-					pane.getChildren().remove(imageview);
+			});
+			meteorThread.start();
+		});
+		
+		
+		// 검은 배경에 흰색 점이 떨어지는 쓰레드
+		Thread starThread = new Thread( ()-> {
+			starX = Math.random() * pane.getPrefWidth();
+			Circle star = new Circle(starX, 0 , 2);
+			star.setFill(Color.WHITE);
+			pane.getChildren().add(star);
+			while(true) {
+				Platform.runLater(()->{
+					star.setLayoutY(star.getLayoutY()+10);
+				});
+				try {
+					Thread.sleep(50);
+				} catch(Exception e) {
 				}
 			}
 		});
-		meteorThread.start();
+		starThread.start();
 		
-		// 검은 배경에 흰색 점이 떨어지는 쓰레드
-//		Thread starThread = new Thread( ()-> {
-//			
-//			
-//		});
-//		starThread.start();
 		
 	}
 }
