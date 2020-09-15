@@ -19,8 +19,6 @@ public class Controller implements Initializable{
 
 	@FXML AnchorPane pane;
 	@FXML ImageView jet;
-
-//	ImageView meteor;
 	
 	double meteorX;
 	double starX;
@@ -59,6 +57,7 @@ public class Controller implements Initializable{
 							}
 						}
 					});
+					shootingThread.setDaemon(true);
 					shootingThread.start();
 				}
 			}
@@ -68,13 +67,14 @@ public class Controller implements Initializable{
 		Thread fallingMeteorThread = new Thread(()->{
 			while(true) {
 				ImageView meteor = new ImageView(new Image("file:///C:/Users/min%20gyeong%20ho/git/Game1945/Game1945/src/images/meteor.png"));
-				meteor.setFitWidth(50);
-				meteor.setFitHeight(50);
+				meteor.setFitWidth(60);
+				meteor.setFitHeight(60);
 				meteorX = Math.random()*pane.getPrefWidth();
 				meteor.setLayoutX(meteorX);
 				meteor.setLayoutY(0);
 				Platform.runLater(()->{
 					pane.getChildren().add(meteor);
+					// meteor가 떨어지는 스레드
 					Thread meteorThread = new Thread(()->{
 						while(true) {
 							Platform.runLater(()->{
@@ -82,6 +82,17 @@ public class Controller implements Initializable{
 								if (meteor.getLayoutY() == pane.getPrefHeight()) {
 									pane.getChildren().remove(meteor);
 								}
+								// meteor와 jet가 부딪히면 jet가 폭발하고 Platform은 종료
+								if ((jet.getLayoutX() >= meteor.getLayoutX() && jet.getLayoutX() <= meteor.getLayoutX() + meteor.getFitWidth())
+										|| jet.getLayoutX()+jet.getFitWidth() >= meteor.getLayoutX() && jet.getLayoutX()+jet.getFitWidth() <= meteor.getLayoutX() + meteor.getFitWidth()) {
+									if ((jet.getLayoutY() >= meteor.getLayoutY() && jet.getLayoutY() <= meteor.getLayoutY() + meteor.getFitHeight())
+											|| jet.getLayoutY() + jet.getFitHeight() >= meteor.getLayoutY() && jet.getLayoutY() + jet.getFitHeight() <= meteor.getLayoutY() + meteor.getFitHeight()) {
+										jet.setImage(new Image("file:///C:/Users/min%20gyeong%20ho/git/Game1945/Game1945/src/images/bomb.png"));
+										Platform.exit();
+									}
+								}
+								
+								
 							});
 							try {
 								Thread.sleep(100);
@@ -89,7 +100,9 @@ public class Controller implements Initializable{
 							}
 						}
 					});
+					meteorThread.setDaemon(true);
 					meteorThread.start();
+					
 				});
 				try {
 					Thread.sleep(1500);
@@ -98,8 +111,10 @@ public class Controller implements Initializable{
 				}
 			}
 		});
+		fallingMeteorThread.setDaemon(true);
 		fallingMeteorThread.start();
 		
+		// universe(falling star)
 		Thread fallingStarThread = new Thread(()->{
 			while(true) {
 				starX = Math.random() * pane.getPrefWidth();
@@ -118,6 +133,7 @@ public class Controller implements Initializable{
 							}
 						}
 					});
+					starThread.setDaemon(true);
 					starThread.start();
 				});
 				try {
@@ -127,29 +143,28 @@ public class Controller implements Initializable{
 				}
 			}
 		});
+		fallingStarThread.setDaemon(true);
 		fallingStarThread.start();
-		// 검은 배경에 흰색 점이 떨어지는 쓰레드
-//		Thread starThread = new Thread( ()-> {
-//			starX = Math.random() * pane.getPrefWidth();
-//			Circle star = new Circle(starX, 0 , 2);
-//			star.setFill(Color.WHITE);
-//			pane.getChildren().add(star);
-//			while(true) {
-//				Platform.runLater(()->{
-//					star.setLayoutY(star.getLayoutY()+10);
-//				});
-//				try {
-//					Thread.sleep(50);
-//				} catch(Exception e) {
-//				}
-//			}
+		
+		// rocket과 meteor 충돌 쓰레드
+//		Thread collisionThread = new Thread(()->{
+//			
 //		});
-//		starThread.start();
+//		collisionThread.setDaemon(true);
+//		collisionThread.start();
+		
+		
+		// bullet이 meteor를 맞추는 쓰레드
+//		Thread hitThread = new Thread(()->{
+//			
+//		});
+//		hitThread.setDaemon(true);
+//		hitThread.start();
 		
 		/*
 		 * 해야할 일
-		 * 1. 마우스 클릭 시 메테오가 떨어지지만 이것을 그냥 있어도 메테오가 떨어지게끔
-		 * 2. 불릿이 메테오에 닿으면 메테오의 이미지가 bomb으로 바뀜
+		 * 1. 마우스 클릭 시 메테오가 떨어지지만 이것을 그냥 있어도 메테오가 떨어지게끔 -> O
+		 * 2. 불릿이 메테오에 닿으면 메테오의 이미지가 bomb으로 바뀜 
 		 * 3. 메테오가 rocket에 닿으면 게임 끝
 		 */
 	}
